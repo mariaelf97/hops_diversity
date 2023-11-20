@@ -36,4 +36,35 @@ rel_abun_unlisted<-as.data.frame(unnest(relative_abundance_files_unzipped,
 # move genus column to row names
 rownames(rel_abun_unlisted)<-rel_abun_unlisted$genus
 
+# change data to long format to be able to merge other datasets
 melt_rel_abun<-melt(rel_abun_unlisted[,-22])
+# function to read absolute abundance files
+read_preprocess_file_absolute <- function(genus_name) {
+  abs_abundance_data<-as.data.frame(fread(paste("/Users/maryam/mnt/home",
+  "/zr13074.16S_231019.zymo/02...US.vs.NONUS.Bac16Sv34",
+  "/Taxa2ASV_Decomposer/Genus/","g__", genus_name,
+  "/seq.counts.csv", sep = "")))
+  rowsum<- rowSums(abs_abundance_data[,-1],na.rm=TRUE)
+  rowsum$genus<-genus_name
+  return(rowsum)
+}
+# apply the function
+absolute_abundance_files <- mapply(read_preprocess_file_absolute,
+                                   n_fixing_data$s , SIMPLIFY = FALSE)
+# simplify the output
+absolute_abundance_files_unzipped <- as.data.frame(
+  do.call(rbind,absolute_abundance_files))
+# unlist the output
+abs_abun_unlisted<-as.data.frame(unnest(
+  absolute_abundance_files_unzipped,colnames(absolute_abundance_files_unzipped)))
+# change dataframe column names
+colnames(abs_abun_unlisted)<-c("Control.CSUSM","Zeus.CSUSM",
+                               "Brewers.Gold.CSUSM","Neo1.CSUSM",
+                               "Comet.CSUSM","Columbus.CSUSM",
+                               "Saaz72.CSUSM","Sorachi.Ace.CSUSM",
+                               "Southern.Cross.CSUSM","Hallertauer.CSUSM",
+                               "Fuggle.UK","genus")
+# move gneus column to row names
+rownames(abs_abun_unlisted)<-abs_abun_unlisted$genus
+# change data to long format
+melt_abs_abun<-melt(abs_abun_unlisted[,-23])
