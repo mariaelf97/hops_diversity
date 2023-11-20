@@ -89,4 +89,32 @@ rel_abun_growth_nfix_abs_abun$mean_DIN<-scale(
 rel_abun_growth_nfix_abs_abun$mean_RGR<-scale(
   rel_abun_growth_nfix_abs_abun$mean_RGR)
 
+# run regression analyese
+lm_rgr= lm(mean_RGR~mean_DIN+genus_rel_abun+n_fixing,data=rel_abun_growth_nfix_abs_abun)
+summary(lm_rgr)
+
+# create heatmap and box plots
+rel_abun_growth_nfix_abs_abun%>%
+  ggplot(aes(x=genus,y=cultivar,fill=genus_rel_abun,color=n_fixing))+
+  geom_tile()+scale_fill_gradient()+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+  geom_text(aes(label=n_fixing))
+rel_abun_growth_nfix_abs_abun%>%
+  ggplot(aes(x=genus_rel_abun,y=mean_RGR,color=n_fixing))+geom_point()
+rel_abun_growth_nfix_abs_abun%>%
+  ggplot(aes(x=genus_rel_abun,fill=n_fixing))+geom_boxplot()+
+  facet_wrap(~origin)
+rel_abun_growth_nfix_abs_abun%>%
+  ggplot(aes(x=mean_DIN,fill=origin))+geom_boxplot()+theme_minimal()
+rel_abun_growth_nfix_abs_abun%>%
+  ggplot(aes(x=mean_RGR,fill=origin))+geom_boxplot()+theme_minimal()
+# create regression plots
+rel_abun_growth_nfix_abs_abun%>%
+  ggplot(aes(x=genus_abs_abun,y=mean_RGR))+
+  geom_point(aes(color=origin))+geom_smooth(method = "lm")+
+  labs(x= "Relative Growth Rate",
+       y =" relarive abundance", 
+       title="Regression analysis for Relative growth rate and relarive abundance")+
+  theme_minimal() 
+
 
