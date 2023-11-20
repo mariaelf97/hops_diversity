@@ -79,3 +79,14 @@ rel_abun_growth_nfix_abs_abun<-rel_abun_growth_nfix%>%
 colnames(rel_abun_growth_nfix_abs_abun)<-c("genus","cultivar","genus_rel_abun",
                                            "origin","mean_DIN","mean_RGR",
                                            "n_fixing","notes","genus_abs_abun")
+# scale data to run regression analyses
+rel_abun_growth_nfix_abs_abun$genus_abs_abun<-scale(
+  rel_abun_growth_nfix_abs_abun$genus_abs_abun)
+rel_abun_growth_nfix_abs_abun$genus_rel_abun<-scale(
+  rel_abun_growth_nfix_abs_abun$genus_rel_abun)
+rel_abun_growth_nfix_abs_abun$mean_DIN<-scale(
+  rel_abun_growth_nfix_abs_abun$mean_DIN)
+rel_abun_growth_nfix_abs_abun$mean_RGR<-scale(
+  rel_abun_growth_nfix_abs_abun$mean_RGR)
+
+
