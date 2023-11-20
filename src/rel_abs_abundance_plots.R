@@ -68,3 +68,14 @@ colnames(abs_abun_unlisted)<-c("Control.CSUSM","Zeus.CSUSM",
 rownames(abs_abun_unlisted)<-abs_abun_unlisted$genus
 # change data to long format
 melt_abs_abun<-melt(abs_abun_unlisted[,-23])
+# join dataframes
+rel_abun_growth<-melt_rel_abun%>%
+  inner_join(growth_data, by= c("variable"="Variety"))
+rel_abun_growth_nfix <- rel_abun_growth %>%
+  inner_join(n_fixing_data,by=c("genus"="s"))
+rel_abun_growth_nfix_abs_abun<-rel_abun_growth_nfix%>%
+  inner_join(melt_abs_abun,by= c("genus","variable"))
+# change column names
+colnames(rel_abun_growth_nfix_abs_abun)<-c("genus","cultivar","genus_rel_abun",
+                                           "origin","mean_DIN","mean_RGR",
+                                           "n_fixing","notes","genus_abs_abun")
